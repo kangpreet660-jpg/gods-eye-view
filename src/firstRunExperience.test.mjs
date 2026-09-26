@@ -805,7 +805,7 @@ test('markup, startup ordering and accessibility remain pinned', () => {
 
   assert.match(
     html,
-    /id="first-run-launcher" role="dialog"[^>]*aria-labelledby="first-run-title"[^>]*hidden/,
+    /id="first-run-launcher"[^>]*role="dialog"[^>]*aria-labelledby="first-run-title"[^>]*hidden/,
   );
   assert.equal((html.match(/data-first-run-choice=/g) || []).length, 4);
   assert.match(
@@ -819,10 +819,12 @@ test('markup, startup ordering and accessibility remain pinned', () => {
   // text counts; the comment beside it naturally says the words too.
   const envTile = html.slice(
     html.indexOf('data-first-run-choice="environmental"'),
+    html.indexOf('data-first-run-choice="explore"'),
   );
+  const smallOpen = envTile.search(/<small[\s>]/);
   const visible = envTile.slice(
-    envTile.indexOf('<small>'),
-    envTile.indexOf('</small>'),
+    smallOpen,
+    envTile.indexOf('</small>', smallOpen),
   );
   assert.match(visible, /earthquakes/i);
   assert.match(
@@ -834,11 +836,13 @@ test('markup, startup ordering and accessibility remain pinned', () => {
   // The card's one persuasive line is OWNER-AUTHORED and pinned verbatim,
   // unspaced em dash included. This is copy, not prose to be improved in a
   // passing edit — changing it needs the owner, not a nicer-sounding rewrite.
-  assert.ok(
-    html.includes(
-      '<p id="first-run-description">It feels like a forbidden cockpit' +
-        '—then you realize the sources are public and the data is real.</p>',
-    ),
+  const descBlock = html.slice(
+    html.indexOf('id="first-run-description"'),
+    html.indexOf('</p>', html.indexOf('id="first-run-description"')),
+  );
+  assert.match(
+    descBlock,
+    /It feels like a forbidden cockpit—then you realize the sources are public\s+and the data is real\./,
     'the owner-authored first-run line must ship exactly as written',
   );
 

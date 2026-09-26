@@ -272,24 +272,18 @@ test('parameterized Display presets keep one stable scroll owner', () => {
   const ui = readShellSource();
   const css = readStylesheet(new URL('../style.css', import.meta.url));
 
-<<<<<<< HEAD
   assert.match(
     css,
-    /#pp-toggles:not\(\.collapsed\) > #param-slider-panel\.active\s*\{[\s\S]*?flex:\s*0 0 auto;[\s\S]*?max-height:\s*none;[\s\S]*?overflow-y:\s*visible;/,
+    /#pp-toggles:not\(\.collapsed\) > \.pp-panel-body > #param-slider-panel\.active\s*\{[\s\S]*?flex:\s*0 0 auto;[\s\S]*?max-height:\s*none;[\s\S]*?overflow-y:\s*visible;/,
   );
   assert.match(
     ui,
-    /readDisplayScrollTop: \(\) =>\s*this\._displayPortalScrollRestoreOwner === 'standard'[\s\S]*?this\._standardDisplayScrollTop[\s\S]*?this\._ppToggles\?\.scrollTop \|\| 0/,
+    /readDisplayScrollTop: \(\) =>\s*this\._displayPortalScrollRestoreOwner === 'standard'[\s\S]*?this\._standardDisplayScrollTop[\s\S]*?displayPanelScroller\(this\._ppToggles\)\?\.scrollTop \|\| 0/,
   );
   assert.match(
     rightRail,
-    /displayPanel\.scrollTop = Math\.min\(displayScrollTop, maxScrollTop\);/,
+    /scroller\.scrollTop = Math\.min\(displayScrollTop, maxScrollTop\);/,
   );
-=======
-  assert.match(css, /#pp-toggles:not\(\.collapsed\) > \.pp-panel-body > #param-slider-panel\.active\s*\{[\s\S]*?flex:\s*0 0 auto;[\s\S]*?max-height:\s*none;[\s\S]*?overflow-y:\s*visible;/);
-  assert.match(ui, /readDisplayScrollTop: \(\) =>\s*this\._displayPortalScrollRestoreOwner === 'standard'[\s\S]*?this\._standardDisplayScrollTop[\s\S]*?displayPanelScroller\(this\._ppToggles\)\?\.scrollTop \|\| 0/);
-  assert.match(rightRail, /scroller\.scrollTop = Math\.min\(displayScrollTop, maxScrollTop\);/);
->>>>>>> 4c1dbe653b2589e5068a1c10e052d5d24249be77
   assert.match(
     ui,
     /this\._sliderPanel\.classList\.remove\('active'\);\s*this\._scheduleRightPanelLayout\(\);/,

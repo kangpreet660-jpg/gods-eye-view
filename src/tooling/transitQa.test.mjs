@@ -660,6 +660,9 @@ test('public transit documentation uses courtesy attribution and the approved gr
         line,
       ),
     );
+  // Exactly one row per operator: a duplicated table (as an unresolved merge
+  // conflict leaves behind) would satisfy every per-row assertion below while
+  // silently documenting the same feed twice, so the count is the real gate.
   assert.equal(rows.length, 7);
   for (const row of rows) {
     assert.doesNotMatch(

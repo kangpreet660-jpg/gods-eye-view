@@ -1351,9 +1351,6 @@ body.cockpit-mode #view-switcher button {
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
 }
-.cockpit-utility-control.is-expanded .cockpit-utility-launcher {
-  width: 100%;
-}
 .cockpit-utility-control.is-expanded:has([data-cockpit-launcher='display'])
   .cockpit-utility-launcher {
   min-height: 42px;

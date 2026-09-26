@@ -466,24 +466,11 @@ test('detection holds nothing, and asks for its own frames instead', async () =>
     source,
   )?.[0];
   assert.ok(paintLane, 'detection.js still has a paint lane');
-<<<<<<< HEAD
   assert.doesNotMatch(
     paintLane,
     /nowMs: Date\.now\(\)/,
     'demand must not re-sample the clock — that is the dropped terminal frame',
   );
-  assert.match(
-    paintLane,
-    /nowMs: Number\.isFinite\(frame\.timestamp\) \? frame\.timestamp : _nowMs\(\)/,
-  );
-  assert.match(
-    paintLane,
-    /animatingLabelCount: result\.animatingCount/,
-    'demand counts fades in both directions',
-  );
-=======
-  assert.doesNotMatch(paintLane, /nowMs: Date\.now\(\)/,
-    'demand must not re-sample the clock — that is the dropped terminal frame');
   assert.match(
     paintLane,
     /const nowMs = Number\.isFinite\(frame\.timestamp\) \? frame\.timestamp : _nowMs\(\)/,
@@ -493,9 +480,11 @@ test('detection holds nothing, and asks for its own frames instead', async () =>
     /detectionNeedsFollowUpFrame\(\{[\s\S]*?\n\s*nowMs,/,
     'the sonar cadence and fade demand share the same frame-clock sample',
   );
-  assert.match(paintLane, /animatingLabelCount: result\.animatingCount/,
-    'demand counts fades in both directions');
->>>>>>> 4c1dbe653b2589e5068a1c10e052d5d24249be77
+  assert.match(
+    paintLane,
+    /animatingLabelCount: result\.animatingCount/,
+    'demand counts fades in both directions',
+  );
   // …and `animatingCount` must really be the BOTH-directions count. Feeding the
   // fade-OUT-only counter into it is exactly the original defect, and it is
   // invisible to every other assertion here — the field name would still line up

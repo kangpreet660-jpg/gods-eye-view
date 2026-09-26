@@ -428,10 +428,7 @@ test('compact URL omits absent-meaning option state and still resolves to it', (
     showOrbits: true,
     selectedSatTrackingId: null,
   };
-<<<<<<< HEAD
-=======
   state.options.wind.overlay = 'speed'; // Frozen v2 omitted-token meaning; new boots use trails.
->>>>>>> 4c1dbe653b2589e5068a1c10e052d5d24249be77
   const params = encodeLayerStateParams(new URLSearchParams('v=2'), state);
   assert.equal(params.has('lo'), false);
   const roundTrip = decodeLayerStateParams(params);
@@ -522,7 +519,7 @@ test('a fresh boot starts 3D aircraft ON in proximity — codec, both layers, an
   );
   assert.match(
     html,
-    /class="pp-toggle-btn active" id="models3d-toggle" aria-pressed="true"/,
+    /class="pp-toggle-btn active"[\s\S]*?id="models3d-toggle"[\s\S]*?aria-pressed="true"/,
     'index.html: the 3D button paints lit on first paint, before ui.js runs — and says so',
   );
   assert.match(
@@ -2424,7 +2421,17 @@ test('the recent-imagery split is share-link only: never stored locally, and a s
 
 test('fire perimeters uses digit 2 without colliding with wind or recent imagery', () => {
   const decoded = decodeLayerStateParams(new URLSearchParams('v=2&l=2.k.1'));
-  assert.deepEqual(decoded.enabledLayerIds, ['fire-perimeters', 'recent-imagery', 'wind']);
-  assert.equal(LAYER_STATE_REGISTRY.find(({ id }) => id === 'fire-perimeters').token, '2');
-  assert.deepEqual(decodeLayerStateParams(new URLSearchParams(encode(decoded))), decoded);
+  assert.deepEqual(decoded.enabledLayerIds, [
+    'fire-perimeters',
+    'recent-imagery',
+    'wind',
+  ]);
+  assert.equal(
+    LAYER_STATE_REGISTRY.find(({ id }) => id === 'fire-perimeters').token,
+    '2',
+  );
+  assert.deepEqual(
+    decodeLayerStateParams(new URLSearchParams(encode(decoded))),
+    decoded,
+  );
 });

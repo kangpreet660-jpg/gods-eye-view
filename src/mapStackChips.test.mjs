@@ -20,6 +20,7 @@ import {
   renderMapStackChips,
   syncMapStackChips,
 } from './mapStackChips.js';
+import { normalizeMarkup } from './testSupport/normalizeMarkup.mjs';
 
 /** Minimal element stand-in — the row only needs create/append/attr/class. */
 function makeElement(tagName = 'div') {
@@ -483,8 +484,10 @@ test('the keyboard focus ring survives on the ACTIVE chip', () => {
 });
 
 test('the Visual Presets tray owns Map Source and the retired left panel is absent', () => {
-  const html = expandApplicationHtml(
-    readFileSync(new URL('../index.html', import.meta.url), 'utf8'),
+  const html = normalizeMarkup(
+    expandApplicationHtml(
+      readFileSync(new URL('../index.html', import.meta.url), 'utf8'),
+    ),
   );
   const ui = readShellSource();
 

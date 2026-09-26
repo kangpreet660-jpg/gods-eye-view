@@ -120,11 +120,14 @@ export class CockpitDisplayPortal {
     if (this.destroyed) return;
     this.stop();
     this.destroyed = true;
-    this.active = false;
+    // A destroyed portal must leave the DOM exactly as it found it, whether it
+    // was last showing the standard or the Cockpit surface, so the return trip
+    // is taken unconditionally rather than only when `active` says so.
     for (const record of this.records) {
       if (record.anchor.parentNode) record.anchor.after(record.group);
       record.anchor.remove();
     }
+    this.active = false;
     this.cockpitPanel?.classList.remove('uses-shared-display-controls');
     if (this.standardPanel)
       displayPanelScroller(this.standardPanel).scrollTop =

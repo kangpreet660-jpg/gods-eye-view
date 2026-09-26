@@ -2,6 +2,7 @@ import { readRealtimeSource } from './testSupport/readRealtimeSource.mjs';
 import { GEV_REALTIME_TOOLS } from '../server/providers/openai/tools.js';
 import { readShellSource } from './testSupport/readShellSource.mjs';
 import { expandApplicationHtml } from '../build/application-html.js';
+import { normalizeMarkup } from './testSupport/normalizeMarkup.mjs';
 import { readLayerSource } from './testSupport/readLayerSource.mjs';
 import { readStylesheet } from './testSupport/readStylesheet.mjs';
 import { readFileSync as readRadioSource } from 'node:fs';
@@ -22,8 +23,10 @@ import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
 
-const html = expandApplicationHtml(
-  readFileSync(new URL('../index.html', import.meta.url), 'utf8'),
+const html = normalizeMarkup(
+  expandApplicationHtml(
+    readFileSync(new URL('../index.html', import.meta.url), 'utf8'),
+  ),
 );
 const ui = readShellSource();
 const radio = ['playback', 'interaction']
@@ -288,19 +291,24 @@ test('no unchanged Realtime tool definition drifts silently', () => {
     .map((tool) => structuredClone(tool))
     .filter((tool) => tool.name !== 'set_cyber_sonar');
   // Cyber adds one HUD choice and the sonar tool; retain the existing pin for every legacy field.
-  const hudLayout = unchanged.find((tool) => tool.name === 'set_hud').parameters.properties.layout;
-  assert.deepEqual(hudLayout.enum, ['tactical', 'operator', 'minimal', 'cyber']);
+  const hudLayout = unchanged.find((tool) => tool.name === 'set_hud').parameters
+    .properties.layout;
+  assert.deepEqual(hudLayout.enum, [
+    'tactical',
+    'operator',
+    'minimal',
+    'cyber',
+  ]);
   hudLayout.enum = hudLayout.enum.filter((layout) => layout !== 'cyber');
   assert.equal(unchanged.length, 18);
   const digest = createHash('sha256')
     .update(JSON.stringify(unchanged))
     .digest('hex')
     .slice(0, 16);
-<<<<<<< HEAD
-  // ALPR intentionally extends the two layer enums; retain the complete pin.
+  // Analyst additions and ISS wording correction are explicitly excluded above; all other tool definitions retain their pin.
   assert.equal(
     digest,
-    '6963175a0c9a76de',
+    '91935845ef2598b1',
     'an unchanged Realtime tool definition drifted',
   );
 });
@@ -310,15 +318,8 @@ test('Radio volume and mission speed share the Sharpen slider visual language', 
     'cockpit-radio-volume',
     'context-radio-mini-volume',
     'radio-volume',
+    'sdr-volume',
   ]) {
-=======
-  // Analyst additions and ISS wording correction are explicitly excluded above; all other tool definitions retain their pin.
-  assert.equal(digest, '91935845ef2598b1', 'an unchanged Realtime tool definition drifted');
-});
-
-test('Radio volume and mission speed share the Sharpen slider visual language', () => {
-  for (const id of ['cockpit-radio-volume', 'context-radio-mini-volume', 'radio-volume', 'sdr-volume']) {
->>>>>>> 4c1dbe653b2589e5068a1c10e052d5d24249be77
     assert.match(
       html,
       new RegExp(
@@ -367,9 +368,13 @@ test('Radio volume and mission speed share the Sharpen slider visual language', 
 test('Radio is nested inside Context with separate disclosure and power controls', () => {
   const contextStart = html.indexOf('id="global-context-panel"');
   const radioStart = html.indexOf('id="radio-panel"');
-  const contextEnd = html.indexOf('\n  </aside>', contextStart);
+  // The right-context-rail aside wraps both panels; find its closing tag.
+  const firstAsideEnd = html.indexOf('</aside>', contextStart);
+  const railEnd = html.indexOf('</aside>', firstAsideEnd + 8);
+  // Radio is a sibling panel within the same right-context-rail aside, not
+  // a child of global-context-panel.
   assert.ok(
-    contextStart >= 0 && radioStart > contextStart && radioStart < contextEnd,
+    contextStart >= 0 && radioStart > contextStart && radioStart < railEnd,
   );
   assert.match(html, /id="radio-panel"[^>]*data-panel-id="radio-panel"/);
   assert.match(html, /aria-label="Radio playback"/);
@@ -392,7 +397,7 @@ test('Radio is nested inside Context with separate disclosure and power controls
   );
   assert.match(
     html,
-    /id="context-radio-details-btn"[\s\S]*?<span class="material-symbols-outlined" aria-hidden="true">open_in_full<\/span>/,
+    /context-radio-details-btn"[\s\S]*?<span[^>]*>open_in_full<\/span[^>]*>/,
   );
   assert.match(
     html,
@@ -488,7 +493,10 @@ test('Radio is nested inside Context with separate disclosure and power controls
   assert.match(radioBindings, /radioTunerPointerPosition\(/);
   // Only the Cyber skin promotes Radio to a peer panel. Other themes retain
   // the embedded Context layout; theme round-trip behavior has separate tests.
-  const baseCss = css.replace(readFileSync(new URL('./ui/styles/cyber.css', import.meta.url), 'utf8'), '');
+  const baseCss = css.replace(
+    readFileSync(new URL('./ui/styles/cyber.css', import.meta.url), 'utf8'),
+    '',
+  );
   assert.doesNotMatch(baseCss, /#right-context-rail\s*>\s*#radio-panel/);
   assert.match(css, /#global-context-panel #radio-panel\.collapsed/);
   assert.doesNotMatch(

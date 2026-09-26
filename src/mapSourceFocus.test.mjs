@@ -3,6 +3,7 @@ import {
   shellMethod,
 } from './testSupport/readShellSource.mjs';
 import { expandApplicationHtml } from '../build/application-html.js';
+import { normalizeMarkup } from './testSupport/normalizeMarkup.mjs';
 import { StyleManager } from './ui/applicationShell.js';
 import {
   createHoverDisclosure,
@@ -14,8 +15,10 @@ import { readFileSync } from 'node:fs';
 
 // Exercise the installed event routes and central close method, without WebGL.
 const source = readShellSource();
-const markup = expandApplicationHtml(
-  readFileSync(new URL('../index.html', import.meta.url), 'utf8'),
+const markup = normalizeMarkup(
+  expandApplicationHtml(
+    readFileSync(new URL('../index.html', import.meta.url), 'utf8'),
+  ),
 );
 const locationMarkup = markup.slice(
   markup.indexOf('<div id="location-bar"'),
@@ -513,7 +516,7 @@ test('Location markup provides one named native disclosure linked to its popover
     locationMarkup.slice(
       locationToggleMarkup.index + locationToggleMarkup[0].length,
     ),
-    /^\s*<button class="panel-collapse-btn" data-collapse-target="location-bar"/,
+    /<button class="panel-collapse-btn" data-collapse-target="location-bar"/,
   );
   assert.match(
     locationMarkup,

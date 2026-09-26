@@ -3505,7 +3505,6 @@ function makeControlElement() {
     title: '',
     type: '',
     classList: { toggle() {} },
-<<<<<<< HEAD
     appendChild(child) {
       child.parent = this;
       this.children.push(child);
@@ -3515,20 +3514,17 @@ function makeControlElement() {
       for (const n of nodes) n.parent = this;
       this.children.push(...nodes);
     },
-    replaceChildren(...nodes) {
-      this.children = [...nodes];
-    },
-=======
-    appendChild(child) { child.parent = this; this.children.push(child); return child; },
-    append(...nodes) { for (const n of nodes) n.parent = this; this.children.push(...nodes); },
     insertBefore(child, anchor) {
       child.parent = this;
-      const index = anchor ? this.children.indexOf(anchor) : this.children.length;
+      const index = anchor
+        ? this.children.indexOf(anchor)
+        : this.children.length;
       this.children.splice(index, 0, child);
       return child;
     },
-    replaceChildren(...nodes) { this.children = [...nodes]; },
->>>>>>> 4c1dbe653b2589e5068a1c10e052d5d24249be77
+    replaceChildren(...nodes) {
+      this.children = [...nodes];
+    },
     remove() {
       const siblings = this.parent?.children;
       if (siblings) this.parent.children = siblings.filter((n) => n !== this);
@@ -4299,9 +4295,13 @@ for (const scheduler of ['animation frame', 'timeout']) {
     let nextFrame = 0;
     const originalRaf = globalThis.requestAnimationFrame;
     const originalCancel = globalThis.cancelAnimationFrame;
-    globalThis.requestAnimationFrame = scheduler === 'animation frame'
-      ? (callback) => { frames.set(++nextFrame, callback); return nextFrame; }
-      : undefined;
+    globalThis.requestAnimationFrame =
+      scheduler === 'animation frame'
+        ? (callback) => {
+            frames.set(++nextFrame, callback);
+            return nextFrame;
+          }
+        : undefined;
     globalThis.cancelAnimationFrame = (id) => frames.delete(id);
     const originalDocument = globalThis.document;
     globalThis.document = { createElement: makeControlElement };
@@ -4309,14 +4309,19 @@ for (const scheduler of ['animation frame', 'timeout']) {
     const layer = makeSlowLayer('wind', { updateInterval: -1 });
     let notify;
     layer.module.getRowControls = () => ({ chips: [] });
-    layer.module.setRowControlsListener = (listener) => { if (listener) notify = listener; };
+    layer.module.setRowControlsListener = (listener) => {
+      if (listener) notify = listener;
+    };
     manager.register(layer.module);
     try {
       manager.buildTogglePanel(makeControlElement());
       const panel = manager._layerPanel;
       let refreshes = 0;
       const refresh = panel._refreshTogglePanel.bind(panel);
-      panel._refreshTogglePanel = () => { refreshes++; refresh(); };
+      panel._refreshTogglePanel = () => {
+        refreshes++;
+        refresh();
+      };
       for (let i = 0; i < 10; i++) notify();
       assert.equal(refreshes, 0, 'notifications defer refresh');
       if (scheduler === 'animation frame') assert.equal(frames.size, 1);
@@ -4340,7 +4345,11 @@ for (const scheduler of ['animation frame', 'timeout']) {
       notify();
       panel._flushRowControlsRefresh();
       t.mock.timers.tick(0);
-      assert.equal(refreshes, 2, 'retained notifications after destroy are inert');
+      assert.equal(
+        refreshes,
+        2,
+        'retained notifications after destroy are inert',
+      );
     } finally {
       await manager.destroyAll();
       if (originalDocument === undefined) delete globalThis.document;
@@ -4355,7 +4364,10 @@ for (const scheduler of ['animation frame', 'timeout']) {
 
 test('row info and legends reconcile in place while chips retain focus and order', async () => {
   const originalDocument = globalThis.document;
-  globalThis.document = { createElement: makeControlElement, activeElement: null };
+  globalThis.document = {
+    createElement: makeControlElement,
+    activeElement: null,
+  };
   const manager = new DataLayerManager({});
   const layer = makeSlowLayer('wind', { updateInterval: -1 });
   let controls = {
@@ -4380,7 +4392,10 @@ test('row info and legends reconcile in place while chips retain focus and order
       let value = info[key];
       Object.defineProperty(info, key, {
         get: () => value,
-        set: (next) => { writes++; value = next; },
+        set: (next) => {
+          writes++;
+          value = next;
+        },
       });
     }
     controls = structuredClone(controls);
@@ -4388,7 +4403,12 @@ test('row info and legends reconcile in place while chips retain focus and order
     assert.equal(row.children[1], legend);
     assert.equal(row.children[2], info);
     assert.equal(writes, 0);
-    for (const change of [{ label: 'High' }, { color: '#ff0000' }, { count: 2 }, { blurb: 'High values' }]) {
+    for (const change of [
+      { label: 'High' },
+      { color: '#ff0000' },
+      { count: 2 },
+      { blurb: 'High values' },
+    ]) {
       Object.assign(controls.legend[0], change);
       manager._refreshTogglePanel();
       assert.notEqual(row.children[1], legend);
@@ -4400,10 +4420,15 @@ test('row info and legends reconcile in place while chips retain focus and order
     controls.infoTitle = '';
     controls.chips.push({ id: 'two', label: 'Two' });
     manager._refreshTogglePanel();
-    assert.deepEqual(row.children.map(node => node.className), [
-      'data-toggle-chip chip-idle', 'data-toggle-chip chip-idle',
-      'data-toggle-legend-item', 'data-toggle-controls-info',
-    ]);
+    assert.deepEqual(
+      row.children.map((node) => node.className),
+      [
+        'data-toggle-chip chip-idle',
+        'data-toggle-chip chip-idle',
+        'data-toggle-legend-item',
+        'data-toggle-controls-info',
+      ],
+    );
     assert.equal(row.children[2], legend);
     assert.equal(row.children[3], info);
     assert.equal(info.textContent, controls.info);
@@ -4414,7 +4439,10 @@ test('row info and legends reconcile in place while chips retain focus and order
     assert.equal(row.hidden, true);
     assert.equal(info.hidden, true);
     assert.deepEqual(row.children, [info]);
-    controls = { info: 'Restored', legend: [{ label: 'New', color: '#ffffff' }] };
+    controls = {
+      info: 'Restored',
+      legend: [{ label: 'New', color: '#ffffff' }],
+    };
     manager._refreshTogglePanel();
     assert.equal(row.children.at(-1), info);
     assert.equal(info.hidden, false);

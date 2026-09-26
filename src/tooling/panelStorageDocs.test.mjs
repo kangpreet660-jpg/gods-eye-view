@@ -3,6 +3,8 @@ import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
+import { expandApplicationHtml } from '../../build/application-html.js';
+import { normalizeMarkup } from '../testSupport/normalizeMarkup.mjs';
 
 const root = fileURLToPath(new URL('../..', import.meta.url));
 
@@ -77,10 +79,11 @@ test('the documented outcomes hold: default, stored open, stored shut, and a sha
   // against the code that decides them.
   const { PanelPositionControls } =
     await import('../ui/panelPositionControls.js');
-  const html = await readFile(
+  const rawHtml = await readFile(
     path.join(root, 'src/ui/templates/layer-panels.html'),
     'utf8',
   );
+  const html = normalizeMarkup(expandApplicationHtml(rawHtml));
   assert.match(
     html,
     /<div id="cctv-panel" class="panel-collapsible collapsed"/,

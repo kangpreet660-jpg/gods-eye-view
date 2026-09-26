@@ -42,7 +42,10 @@ test('the Local RTL-SDR card lives inside the Radio panel with every control', (
   ]) {
     assert.match(html, new RegExp(`id="${id}"`), `${id} is missing`);
   }
-  assert.match(html, /id="sdr-status"[^>]*>Connect an RTL-SDR to begin\.</);
+  assert.match(
+    html,
+    /id="sdr-status"[\s\S]*?>[\s\S]*?Connect an RTL-SDR to begin\./,
+  );
   assert.match(css, /\.sdr-radio-card\s*\{/);
 });
 

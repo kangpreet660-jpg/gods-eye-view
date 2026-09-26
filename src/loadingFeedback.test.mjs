@@ -5,6 +5,7 @@ import {
 } from './testSupport/readShellSource.mjs';
 import { expandApplicationHtml } from '../build/application-html.js';
 import { readStylesheet } from './testSupport/readStylesheet.mjs';
+import { normalizeMarkup } from './testSupport/normalizeMarkup.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
@@ -396,7 +397,7 @@ test('universal notice lifecycle clears on dispose and uses the one top-center l
     /this\._shareTrackingNoticeGeneration \+= 1;/,
   );
   assert.match(
-    html,
+    normalizeMarkup(html),
     /<div id="global-loading-status" role="status" aria-live="polite" aria-atomic="true" hidden>/,
   );
 });

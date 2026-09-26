@@ -4527,3 +4527,64 @@ body.geo-drop-active::after {
   background: rgba(0, 212, 255, 0.3);
   color: #fff;
 }
+
+/* ── Reduced motion ───────────────────────────────────────────────────────
+   The JARVIS panel is the busiest sheet in the console: it pulses, sweeps,
+   spins, and slides on entrance. `prefers-reduced-motion` is a request to
+   stop the parts that MOVE, not the parts that INFORM — the same treatment
+   the cockpit, cyber, and command-dock sheets already get.
+
+   Entrances and one-shot transitions are dropped to the end state rather
+   than removed, so nothing is left at opacity 0 or mid-transform. Looping
+   ambient motion is stopped outright. Where a stop leaves an element
+   indistinguishable, a static treatment preserves the signal instead:
+   the thinking dots keep a visible ring, and the radar sweep freezes on
+   its leading edge instead of vanishing. */
+@media (prefers-reduced-motion: reduce) {
+  /* Every one-shot entrance in this sheet resolves to its final frame. */
+  .ai-fullscreen-container,
+  .ai-message,
+  .ai-tool-card,
+  .ai-system-drawer,
+  .ai-code-block,
+  .ai-thought-accordion,
+  .ai-genai-preview,
+  .ai-jarvis-modal,
+  .ai-search-result,
+  .ai-badge,
+  [data-cockpit-brief-page] {
+    animation: none !important;
+  }
+
+  /* Ambient loops carry no information once they stop; the spinners and
+     sweep that DO carry information get a frozen equivalent below. */
+  .ai-jarvis-orb::before,
+  .ai-jarvis-orb::after,
+  .ai-status-dot,
+  .ai-mic-indicator,
+  .ai-typing-dot,
+  .ai-thinking-dot,
+  .ai-search-match,
+  .ai-live-pulse {
+    animation: none !important;
+  }
+
+  /* A stopped loader must not become an invisible loader: hold the last
+     keyframe's rotation so the element still reads as "working". */
+  .ai-tool-spinner,
+  .ai-radar-sweep {
+    animation-duration: 0s !important;
+    animation-iteration-count: 1 !important;
+    animation-fill-mode: forwards !important;
+  }
+
+  /* Hover/press feedback becomes an instant state change. */
+  .ai-genai-preview-img,
+  .ai-genai-download-btn,
+  .ai-code-btn,
+  .ai-send-btn,
+  .ai-jarvis-close,
+  .ai-system-close-btn {
+    transition-duration: 0.01ms !important;
+  }
+}

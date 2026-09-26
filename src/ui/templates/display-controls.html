@@ -26,6 +26,7 @@
         <option value="tactical">Tactical</option>
         <option value="operator">Operator</option>
         <option value="minimal">Minimal</option>
+        <option value="cyber">Cyber</option>
       </select>
     </div>
   </div>
@@ -397,6 +398,126 @@
         aria-label="Sharpen intensity"
       />
       <span class="pp-slider-value" id="sharpen-intensity-value">49%</span>
+    </div>
+  </div>
+  <div class="pp-toggle-group">
+    <button
+      class="pp-toggle-btn"
+      id="cyber-sonar-toggle"
+      title="Cyber Sonar — GPU contact sonar sweep"
+      aria-pressed="false"
+    >
+      <span class="pp-icon material-symbols-outlined" aria-hidden="true"
+        >radar</span
+      >
+      <span class="pp-label">Cyber Sonar</span>
+    </button>
+    <div class="pp-slider-row" id="cyber-sonar-row">
+      <div class="pp-mode-seg" role="radiogroup" aria-label="Cyber Sonar mode">
+        <button
+          class="pp-mode-btn active"
+          id="cyber-sonar-mode-on"
+          data-mode="on"
+          role="radio"
+          aria-checked="true"
+        >
+          ON
+        </button>
+        <button
+          class="pp-mode-btn"
+          id="cyber-sonar-mode-off"
+          data-mode="off"
+          role="radio"
+          aria-checked="false"
+        >
+          OFF
+        </button>
+      </div>
+    </div>
+    <div class="pp-slider-row cyber-sonar-rings-row" id="cyber-sonar-rings-row">
+      <label class="pp-slider-mini-label" for="cyber-sonar-rings">Rings</label>
+      <input
+        type="range"
+        class="pp-slider"
+        id="cyber-sonar-rings"
+        min="1"
+        max="12"
+        step="1"
+        value="6"
+        aria-label="Cyber sonar ring count"
+      />
+      <span class="pp-slider-value" id="cyber-sonar-rings-value">6</span>
+    </div>
+    <div class="pp-slider-row cyber-sonar-range-row" id="cyber-sonar-range-row">
+      <label class="pp-slider-mini-label" for="cyber-sonar-range">Range</label>
+      <input
+        type="range"
+        class="pp-slider"
+        id="cyber-sonar-range"
+        min="10"
+        max="100"
+        step="1"
+        value="80"
+        aria-label="Cyber sonar range percentage"
+      />
+      <span class="pp-slider-value" id="cyber-sonar-range-value">80%</span>
+    </div>
+    <div
+      class="pp-slider-row cyber-sonar-intensity-row"
+      id="cyber-sonar-intensity-row"
+    >
+      <label class="pp-slider-mini-label" for="cyber-sonar-intensity"
+        >Intensity</label
+      >
+      <input
+        type="range"
+        class="pp-slider"
+        id="cyber-sonar-intensity"
+        min="0"
+        max="100"
+        step="1"
+        value="50"
+        aria-label="Cyber sonar sweep intensity"
+      />
+      <span class="pp-slider-value" id="cyber-sonar-intensity-value">50%</span>
+    </div>
+    <div
+      class="pp-slider-row cyber-sonar-opacity-row"
+      id="cyber-sonar-opacity-row"
+    >
+      <label class="pp-slider-mini-label" for="cyber-sonar-opacity"
+        >Opacity</label
+      >
+      <input
+        type="range"
+        class="pp-slider"
+        id="cyber-sonar-opacity"
+        min="0"
+        max="100"
+        step="1"
+        value="84"
+        aria-label="Cyber contact and label opacity"
+      />
+      <span class="pp-slider-value" id="cyber-sonar-opacity-value">84%</span>
+    </div>
+    <div
+      class="pp-slider-row cyber-sonar-sector-row"
+      id="cyber-sonar-sector-row"
+    >
+      <label class="pp-slider-mini-label" for="cyber-sonar-sector"
+        >Sector</label
+      >
+      <input
+        type="range"
+        class="pp-slider"
+        id="cyber-sonar-sector"
+        min="1"
+        max="360"
+        step="1"
+        value="15"
+        aria-label="Cyber sonar sector width"
+      />
+      <span class="pp-slider-value" id="cyber-sonar-sector-value">15°</span>
     </div>
   </div>
 </div>
